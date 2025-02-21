@@ -1,4 +1,4 @@
-package ru.viktor141.tms;
+package ru.viktor141.tms.controller;
 
 
 import org.junit.jupiter.api.*;

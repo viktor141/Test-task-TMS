@@ -14,6 +14,11 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
+/**
+ * JwtTokenProvider generates and validates JWT tokens.
+ * <p>
+ * This class provides methods for creating and validating JWT tokens for user authentication.
+ */
 @Slf4j
 @Component
 public class JwtTokenProvider {
@@ -23,6 +28,12 @@ public class JwtTokenProvider {
     private Key key;
     private static final long EXPIRATION_TIME = 3600000; // 1 hour
 
+    /**
+     * Generates a JWT token for the given user details.
+     *
+     * @param userDetails The user details object.
+     * @return A JWT token string.
+     */
     public String generateToken(UserDetails userDetails) {
         if (userDetails.getAuthorities().isEmpty()) {
             throw new IllegalArgumentException("User has no roles assigned!");
@@ -40,6 +51,13 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    /**
+     * Extracts the email from the given JWT token.
+     *
+     * @param token The JWT token.
+     * @return The email of the user.
+     * @throws JwtException If the token is invalid or expired.
+     */
     public String extractEmail(String token) throws JwtException {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -49,11 +67,24 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
+    /**
+     * Validates the given JWT token against the user details.
+     *
+     * @param token        The JWT token.
+     * @param userDetails  The user details object.
+     * @return True if the token is valid, false otherwise.
+     */
     public boolean validateToken(String token, UserDetails userDetails) {
         String email = extractEmail(token);
         return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
+    /**
+     * Checks if the given token has expired.
+     *
+     * @param token The JWT token.
+     * @return True if the token has expired, false otherwise.
+     */
     private boolean isTokenExpired(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -64,6 +95,11 @@ public class JwtTokenProvider {
                 .before(new Date());
     }
 
+    /**
+     * Retrieves the signing key for JWT generation and validation.
+     *
+     * @return The signing key.
+     */
     private Key getSigningKey() {
         if (key == null) {
             byte[] keyBytes = Base64.getDecoder().decode(SECRET_KEY);

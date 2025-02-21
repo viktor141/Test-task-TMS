@@ -18,6 +18,11 @@ import ru.viktor141.tms.service.UserService;
 
 import java.io.IOException;
 
+/**
+ * JwtAuthenticationFilter handles JWT-based authentication for incoming requests.
+ * <p>
+ * This filter verifies the JWT token in the Authorization header and authenticates the user.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -26,6 +31,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
 
+    /**
+     * Processes each incoming request to verify the JWT token and authenticate the user.
+     *
+     * @param request     The HttpServletRequest object.
+     * @param response    The HttpServletResponse object.
+     * @param filterChain The FilterChain for processing the request.
+     * @throws ServletException If an error occurs during filtering.
+     * @throws IOException      If an I/O error occurs.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
